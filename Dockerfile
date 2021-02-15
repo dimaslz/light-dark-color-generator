@@ -1,12 +1,8 @@
 FROM node:alpine as builder
 
-ENV PROJECTDIR /app
-ENV NODE_ENV production
-
 COPY package.json ./
-COPY yarn.lock ./
 
-WORKDIR $PROJECTDIR
+WORKDIR /app
 
 RUN yarn install
 
@@ -15,9 +11,8 @@ COPY . .
 RUN yarn build
 
 
-FROM nginx:alpine
+FROM nginx:alpine as production
 
-WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
